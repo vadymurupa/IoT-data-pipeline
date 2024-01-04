@@ -1,0 +1,32 @@
+version: '3'
+services:
+  nifi:
+    image: apache/nifi:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - NIFI_WEB_HTTP_PORT=8080
+    volumes:
+      - ./nifi-data:/opt/nifi/nifi-current/logs
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto-data:/mosquitto/data
+      - ./mosquitto-log:/mosquitto/log
+
+  influxdb:
+    image: influxdb:latest
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./influxdb-data:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=mybucket
